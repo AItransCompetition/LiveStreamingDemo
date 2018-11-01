@@ -14,6 +14,7 @@ LogFile_Path = "./log/"                #log file trace path setting,
 # Debug Mode: if True, You can see the debug info in the logfile
 #             if False, no log ,but the training speed is high
 DEBUG = False
+DRAW = False
 # load the trace
 all_cooked_time, all_cooked_bw, all_cooked_rtt,_ = load_trace.load_trace(TRAIN_TRACES)
 #random_seed
@@ -60,13 +61,14 @@ bit_rate_record = [0]
 buffer_record = [0]
 throughput_record = [0]
 # plot the real time image
-fig = plt.figure()
-plt.ion()
-plt.xlabel("time")
+if DRAW:
+    fig = plt.figure()
+    plt.ion()
+    plt.xlabel("time")
 
 while True:
     # input the train steps
-    if cnt > 1000:
+    if cnt > 5000:
         plt.ioff()
         break
     #actions bit_rate  target_buffer
@@ -107,33 +109,25 @@ while True:
             throughput_record.append(sum(S_send_data_size) /1000  / sum(S_time_interval))
         
         # draw setting
-        ax = fig.add_subplot(311)
-        plt.ylabel("BIT_RATE")
-        plt.ylim(300,1000)
-        plt.plot(id_list,bit_rate_record,'-r')
+        if DRAW:
+            ax = fig.add_subplot(311)
+            plt.ylabel("BIT_RATE")
+            plt.ylim(300,1000)
+            plt.plot(id_list,bit_rate_record,'-r')
         
-        ax = fig.add_subplot(312)
-        plt.ylabel("Buffer_size")
-        plt.ylim(0,7)
-        plt.plot(id_list,buffer_record,'-b')
+            ax = fig.add_subplot(312)
+            plt.ylabel("Buffer_size")
+            plt.ylim(0,7)
+            plt.plot(id_list,buffer_record,'-b')
 
-        ax = fig.add_subplot(313)
-        plt.ylabel("throughput")
-        plt.ylim(0,2000)
-        plt.plot(id_list,throughput_record,'-g')
+            ax = fig.add_subplot(313)
+            plt.ylabel("throughput")
+            plt.ylim(0,2000)
+            plt.plot(id_list,throughput_record,'-g')
 
-        plt.draw()
-        plt.pause(0.01)
+            plt.draw()
+            plt.pause(0.01)
 
-        '''print("interval",S_time_interval)
-        print("send_data",S_send_data_size)
-        print("chunk len",S_chunk_len)
-        print("buffer",S_buffer_size)
-        print("rebuf",S_rebuf)
-        print("delay",S_end_delay)
-        print("rtt",S_rtt)
-        print("bitrate",bit_rate, buffer_size, last_bit_rate)
-        print("\n")'''
 
 
         # -------------------------------------------Your Althgrithom ------------------------------------------- 
@@ -177,4 +171,6 @@ while True:
     S_play_time.append(play_time_len)
         
     # output
+if DRAW:
+    plt.show()
 print(reward_all)
