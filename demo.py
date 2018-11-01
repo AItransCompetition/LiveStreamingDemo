@@ -7,10 +7,16 @@ import LiveStreamingEnv.env as env
 import LiveStreamingEnv.load_trace as load_trace
 import matplotlib.pyplot as plt
 import time
+import platform
 # path setting
-TRAIN_TRACES = './train_sim_traces/'   #train trace path setting,
-video_size_file = './video_size_'      #video trace path setting,
-LogFile_Path = "./log/"                #log file trace path setting,
+if platform.system() == "Liunx" or platform.system() == "Darwin":
+    TRAIN_TRACES = './train_sim_traces/'   #train trace path setting,
+    video_size_file = './video_size_'      #video trace path setting,
+    LogFile_Path = "./log/"                #log file trace path setting,
+else:
+    TRAIN_TRACES = ".\\train_sim_traces\\"
+    video_size_file = ".\\video_size_"
+    LogFile_Path = ".\\log\\"
 # Debug Mode: if True, You can see the debug info in the logfile
 #             if False, no log ,but the training speed is high
 DEBUG = False
@@ -141,7 +147,7 @@ while True:
         elif buffer_size >= RESEVOIR + CUSHION:
             bit_rate = 1
         rebuf_list = [i for i in S_rebuf if i > 0] 
-        #print(rebuf_list, sum(rebuf_list), sum(S_chunk_len))
+
         if sum(rebuf_list) > sum(S_chunk_len):
             target_buffer = 0
         else:
