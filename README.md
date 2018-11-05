@@ -53,8 +53,33 @@
         |Time(s)  | throughput(kpbs) | rtt(ms)|
         |---------|------------------|--------|
         |20.5     | 1.312            |   56   |
-    
-#Log Setting
+
+# Draw settings
+* if you want to Debug the code,the Drwa = True, the image will let you know all kinds of indicators
+* ![Image text](https://github.com/NGnetLab/LiveStreamingDemo/blob/master/figure_1.png)
+
+```python
+           if DRAW:
+               ax = fig.add_subplot(311)
+               plt.ylabel("BIT_RATE")
+               plt.ylim(300,1000)
+               plt.plot(id_list,bit_rate_record,'-r')
+  
+               ax = fig.add_subplot(312)
+               plt.ylabel("Buffer_size")
+               plt.ylim(0,7)
+               plt.plot(id_list,buffer_record,'-b')
+  
+               ax = fig.add_subplot(313)
+               plt.ylabel("throughput")
+               plt.ylim(0,2500)
+               plt.plot(id_list,throughput_record,'-g')
+  
+               plt.draw()
+               plt.pause(0.01)
+```
+
+# Log Setting
 * log is used to debug the code. you can set you log file path:
 
                    14 LogFile_Path = "./log/"                #log file trace path setting, 
