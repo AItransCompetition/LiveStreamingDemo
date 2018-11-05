@@ -1,4 +1,4 @@
-#INFO
+# INFO
 * LiveStreamingDemo
 * For LiveStreaming Game SDK demo
 * python 2 or python 3
