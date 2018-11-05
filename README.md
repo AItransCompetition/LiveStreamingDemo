@@ -28,7 +28,7 @@
 ```
 
 # Code structure
-* Init the  env:
+* Init the  env sim :
 ```python
          net_env = env.Environment(all_cooked_time=all_cooked_time,       # physical time
                                   all_cooked_bw=all_cooked_bw,            # throughput
@@ -41,7 +41,7 @@
 * Loop:
     cnt control you train setps:
 ```python    
-    if steps > 50000:
+    if cnt > 50000:
           break;
 ```
 * every step you can get the info from env:
