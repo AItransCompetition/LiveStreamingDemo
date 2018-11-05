@@ -4,7 +4,30 @@
 * python 2 or python 3
 * python demo.py
 
-# net Env
+# What you need to do ?
+* you should to upload you althgrithom in this area
+```python
+        # -------------------------------------------Your Althgrithom -------------------------------------------
+        # which part is the althgrothm part ,the buffer based ,
+        # if the buffer is enough ,choose the high quality
+        # if the buffer is danger, choose the low  quality
+        # if there is no rebuf ,choose the low target_buffer
+  
+        if buffer_size < RESEVOIR:
+            bit_rate = 0
+        elif buffer_size >= RESEVOIR + CUSHION:
+            bit_rate = 1
+        rebuf_list = [i for i in S_rebuf if i > 0]
+  
+        if sum(rebuf_list) > sum(S_chunk_len):
+            target_buffer = 0
+        else:
+            target_buffer = 1
+  
+        # ------------------------------------------- End  -------------------------------------------
+```
+
+# Code structure
 * Init the  env:
 ```python
          net_env = env.Environment(all_cooked_time=all_cooked_time,       # physical time
