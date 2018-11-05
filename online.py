@@ -7,19 +7,18 @@ import LiveStreamingEnv.env as env
 import LiveStreamingEnv.load_trace as load_trace
 import matplotlib.pyplot as plt
 import time
-import numpy as np
+import algorithm as alg
 # path setting
 TRAIN_TRACES = './train_sim_traces/'   #train trace path setting,
 video_size_file = './video_size_'      #video trace path setting,
 LogFile_Path = "./log/"                #log file trace path setting,
 # Debug Mode: if True, You can see the debug info in the logfile
 #             if False, no log ,but the training speed is high
-DEBUG = True
-DRAW = True
+DEBUG = False
 # load the trace
 all_cooked_time, all_cooked_bw, all_cooked_rtt,_ = load_trace.load_trace(TRAIN_TRACES)
-#random_seed 
-random_seed = 2
+#random_seed
+agent_id = 2
 #init the environment
 #setting one:
 #     1,all_cooked_time : timestamp
@@ -32,10 +31,10 @@ random_seed = 2
 net_env = env.Environment(all_cooked_time=all_cooked_time,
                               all_cooked_bw=all_cooked_bw,
                               all_cooked_rtt=all_cooked_rtt,
-                              random_seed=random_seed,
+                              random_seed=agent_id,
                               logfile_path=LogFile_Path,
                               VIDEO_SIZE_FILE=video_size_file,
-                              Debug = DEBUG)
+                              Debug = True)
 
 cnt = 0
 S_time_interval = []
@@ -57,20 +56,18 @@ bit_rate = 0
 target_buffer = 0
 # plot info
 idx = 0
-id_list = []
-bit_rate_record = []
-buffer_record = []
-throughput_record = []
+id_list = [0]
+bit_rate_record = [0]
+buffer_record = [0]
+throughput_record = [0]
 # plot the real time image
-if DRAW:
-    fig = plt.figure()
-    plt.ion()
-    plt.xlabel("time")
-    plt.axis('off')
+fig = plt.figure()
+plt.ion()
+plt.xlabel("time")
 
 while True:
     # input the train steps
-    if cnt > 500:
+    if cnt > 1000:
         plt.ioff()
         break
     #actions bit_rate  target_buffer
@@ -90,17 +87,6 @@ while True:
     # end_of_video   : If the True ,which means the video is over.
     time, time_interval, send_data_size, chunk_len, rebuf, buffer_size, rtt, play_time_len,end_delay, decision_flag, buffer_flag,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,TARGET_BUFFER[target_buffer])
     cnt += 1
-    if time_interval != 0:
-        # plot bit_rate 
-        id_list.append(idx)
-        idx += time_interval
-        bit_rate_record.append(BIT_RATE[bit_rate])
-        # plot buffer 
-        buffer_record.append(buffer_size)
-        # plot throughput 
-        trace_idx = net_env.get_trace_id()
-        throughput_record.append(all_cooked_bw[trace_idx][int(idx/0.5)] * 1000 )
-
     if decision_flag :
         # reward formate = play_time * BIT_RATE - 4.3 * rebuf - 1.2 * end_delay
         reward =  sum(S_play_time) *  BIT_RATE[bit_rate] - 0.8 *  sum(S_rebuf) -  0.2 * (end_delay - 3)  - abs(BIT_RATE[bit_rate] - BIT_RATE[last_bit_rate])   
@@ -109,46 +95,50 @@ while True:
         # last_bit_rate
         last_bit_rate = bit_rate
 
+        # plot bit_rate 
+        id_list.append(idx)
+        idx += 1
+        bit_rate_record.append(BIT_RATE[bit_rate])
+        # plot buffer 
+        buffer_record.append(buffer_size)
+        # plot throughput 
+        if sum(S_time_interval) == 0:
+            throughput_record.append(0)
+        else:
+            throughput_record.append(sum(S_send_data_size) /1000  / sum(S_time_interval))
         
         # draw setting
-        if DRAW:
-            ax = fig.add_subplot(311)
-            plt.ylabel("BIT_RATE")
-            plt.ylim(300,1000)
-            plt.plot(id_list,bit_rate_record,'-r')
+        ax = fig.add_subplot(311)
+        plt.ylabel("BIT_RATE")
+        plt.ylim(300,1000)
+        plt.plot(id_list,bit_rate_record,'-r')
         
-            ax = fig.add_subplot(312)
-            plt.ylabel("Buffer_size")
-            plt.ylim(0,7)
-            plt.plot(id_list,buffer_record,'-b')
+        ax = fig.add_subplot(312)
+        plt.ylabel("Buffer_size")
+        plt.ylim(0,7)
+        plt.plot(id_list,buffer_record,'-b')
 
-            ax = fig.add_subplot(313)
-            plt.ylabel("throughput")
-            plt.ylim(0,2500)
-            plt.plot(id_list,throughput_record,'-g')
+        ax = fig.add_subplot(313)
+        plt.ylabel("throughput")
+        plt.ylim(0,2000)
+        plt.plot(id_list,throughput_record,'-g')
 
-            plt.draw()
-            plt.pause(0.01)
+        plt.draw()
+        plt.pause(0.01)
 
+        '''print("interval",S_time_interval)
+        print("send_data",S_send_data_size)
+        print("chunk len",S_chunk_len)
+        print("buffer",S_buffer_size)
+        print("rebuf",S_rebuf)
+        print("delay",S_end_delay)
+        print("rtt",S_rtt)
+        print("bitrate",bit_rate, buffer_size, last_bit_rate)
+        print("\n")'''
 
 
         # -------------------------------------------Your Althgrithom ------------------------------------------- 
-        # which part is the althgrothm part ,the buffer based , 
-        # if the buffer is enough ,choose the high quality
-        # if the buffer is danger, choose the low  quality
-        # if there is no rebuf ,choose the low target_buffer
-
-        if buffer_size < RESEVOIR:
-            bit_rate = 0
-        elif buffer_size >= RESEVOIR + CUSHION:
-            bit_rate = 1
-        rebuf_list = [i for i in S_rebuf if i > 0] 
-
-        if sum(rebuf_list) > sum(S_chunk_len):
-            target_buffer = 0
-        else:
-            target_buffer = 1
-
+        bit_rate , target_buffer = alg.algorithm() 
         # ------------------------------------------- End  ------------------------------------------- 
 
 
@@ -173,6 +163,4 @@ while True:
     S_play_time.append(play_time_len)
         
     # output
-if DRAW:
-    plt.show()
 print(reward_all)
