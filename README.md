@@ -30,7 +30,7 @@
 
 
 
-#Trace Data setting 
+# Trace Data setting 
 * you will have two types trace, one is network trace, another is video trace
 
                    12 TRAIN_TRACES = './train_sim_traces/'   #train trace path setting,
