@@ -78,7 +78,7 @@
         |20.5     | 1.312            |   56   |
 
 # Draw settings
-* if you want to Debug the code,the Drwa = True, the image will let you know all kinds of indicators
+* if you want to Debug the code,the Draw = True, the image will let you know all kinds of indicators
 * ![Image text](https://github.com/NGnetLab/LiveStreamingDemo/blob/master/figure_1.png)
 
 ```python
