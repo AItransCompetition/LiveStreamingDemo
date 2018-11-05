@@ -26,7 +26,12 @@
         time, time_interval, send_data_size, chunk_len, rebuf, buffer_size, rtt, play_time_len,end_delay, decision_flag, buffer_flag,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,TARGET_BUFFER[target_buffer])
 ```
 * calculate the score
-    *    
+    ```python
+       if decision_flag :
+           # reward formate = play_time * BIT_RATE - 4.3 * rebuf - 1.2 * end_delay
+           reward =  sum(S_play_time) *  BIT_RATE[bit_rate] - 0.8 *  sum(S_rebuf) -  0.2 * (end_delay - 3)  -       abs(BIT_RATE[bit_rate] - BIT_RATE[last_bit_rate])
+           reward_all += reward
+    ```
 
 
 
