@@ -3,7 +3,7 @@
 * For LiveStreaming Game SDK demo
 * languages: python 2 or python 3
 * Document description:
-     * demo.py         --- a SDK to call the SIM, and you will fill your algorithm in it.
+     * demo.py         --- <font color=#0099ff> a SDK to call the SIM, and you will fill your algorithm in it.</font>
      * video_size_0    --- video trace (low_bitrate)
      * video_size_1    --- video trace (high_bitrate)
      * train_sim_trace --- network trace for trainning
