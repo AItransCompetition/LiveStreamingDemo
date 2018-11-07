@@ -1,10 +1,10 @@
-<font color=#00ffff>  字体改成蓝色了 </font>
+
 # INFO
 * LiveStreamingDemo
 * For LiveStreaming Game SDK demo
 * languages: python 2 or python 3
 * Document description:
-     * demo.py         --- <font color=#FF0000>  a SDK to call the SIM, and you will fill your algorithm in it. </font>
+     * demo.py         --- ```a SDK to call the SIM, and you will fill your algorithm in it. ```
      * video_size_0    --- video trace (low_bitrate)
      * video_size_1    --- video trace (high_bitrate)
      * train_sim_trace --- network trace for trainning
