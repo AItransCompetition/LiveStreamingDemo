@@ -1,4 +1,4 @@
-<font color=#FF0000>  a SDK to call the SIM, and you will fill your algorithm in it. </font>
+<font color=#00ffff>  字体改成蓝色了 </font>
 # INFO
 * LiveStreamingDemo
 * For LiveStreaming Game SDK demo
