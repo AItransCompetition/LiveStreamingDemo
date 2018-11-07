@@ -1,9 +1,15 @@
 # INFO
 * LiveStreamingDemo
 * For LiveStreaming Game SDK demo
-* python 2 or python 3
-* python demo.py
-
+* languages: python 2 or python 3
+* Document description:
+     * demo.py         --- a SDK to call the SIM, and you will fill your algorithm in it.
+     * video_size_0    --- video trace (low_bitrate)
+     * video_size_1    --- video trace (high_bitrate)
+     * train_sim_trace --- network trace for trainning
+     * test_sim_trace  --- network trace for you test
+     * ABR.py          --- you need to copy your algorithm in demo file to this file, and upload it in website to get your score.
+     * online.py       --- the same as file in server to call you ABR.py, this file help you to debug your uploads.
 # What you need to do ?
 * you should to upload you althgrithom in this area
 ```python
