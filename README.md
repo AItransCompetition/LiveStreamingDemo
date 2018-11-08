@@ -11,23 +11,23 @@ Table of Contents
 # INFO
 * LiveStreamingDemo
 * For LiveStreaming Game SDK demo
-* languages: python 2 or python 3
+* Languages: python 2 or python 3
 * Document description:
-     * demo.py         --- ```a SDK to call the SIM, and you will fill your algorithm in it. ```
+     * demo.py         --- ```An SDK to call the SIM, and you will fill your algorithm in it. ```
      * video_size_0    --- ```video trace (low_bitrate)```
      * video_size_1    --- ```video trace (high_bitrate)```
      * train_sim_trace --- ```network trace for trainning```
      * test_sim_trace  --- ```network trace for you test```
-     * ABR.py          --- ```you need to copy your algorithm in demo file to this file, and upload it in website to get your score.```
-     * online.py       --- ```the same as file in server to call you ABR.py, this file help you to debug your uploads.```
+     * ABR.py          --- ```you need to copy your algorithm in demo file to this file and upload it in the website to get your score.```
+     * online.py       --- ``the same as the file in the server to call you ABR.py, which helps you to debug your uploads.```
 # What you need to do ?
-* you should to upload you althgrithom in this area
+* you should  upload your algorithm in this area
 ```python
         # -------------------------------------------Your Althgrithom -------------------------------------------
-        # which part is the althgrothm part ,the buffer based ,
-        # if the buffer is enough ,choose the high quality
-        # if the buffer is danger, choose the low  quality
-        # if there is no rebuf ,choose the low target_buffer
+        # which part is the algorithm part ,the buffer based ,
+        # if the buffer is enough, choose the high quality
+        # if the buffer is in danger, choose the low  quality
+        # if there is no rebuf , choose the low target_buffer
   
         if buffer_size < RESEVOIR:
             bit_rate = 0
@@ -55,12 +55,12 @@ Table of Contents
                                   Debug = DEBUG)                          # Debug setting
 ```
 * Loop:
-    cnt control you train setps:
+    The cnt control you train steps:
 ```python    
     if cnt > 50000:
           break;
 ```
-* every step you can get the info from env:
+* every step you can get the observations from env:
 ```python
         time, time_interval, send_data_size, chunk_len, rebuf, buffer_size, rtt, play_time_len,end_delay, decision_flag, buffer_flag,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,TARGET_BUFFER[target_buffer])
 ```
@@ -75,7 +75,7 @@ Table of Contents
 
 
 # Trace Data setting 
-* you will have two types trace, one is network trace, another is video trace
+* you will have two types of the trace, one is network trace, another is video trace
 
                    12 TRAIN_TRACES = './train_sim_traces/'   #train trace path setting,
                    13 video_size_file = './video_size_'      #video trace path setting,
@@ -94,7 +94,7 @@ Table of Contents
         |20.5     | 1.312            |   56   |
 
 # Draw settings
-* if you want to Debug the code,the Draw = True, the image will let you know all kinds of indicators
+* if you want to Debug the code, the Draw = True, the image will let you know all kinds of indicators
 * ![Image text](https://github.com/NGnetLab/LiveStreamingDemo/blob/master/figure_1.png)
 
 ```python
@@ -119,7 +119,7 @@ Table of Contents
 ```
 
 # Log Setting
-* log is used to debug the code. you can set you log file path:
+* the log is used to debug the code. you can set you log file path:
 
                    14 LogFile_Path = "./log/"                #log file trace path setting, 
         
@@ -145,30 +145,29 @@ Table of Contents
 ```  
 real_time 3.0476    cdn_rebuf0.0412	client_rebuf 0.000	download_duration 0.0000	frame_size 21569.0000	play_time_len 0.0412	download_id 76	cdn_newest_frame 76	client_buffer 2.9588	play_time 0.0412	play_id 1.0000	latency 2.9588	000
 ```
-* <font color=#46A3ff size=2> which 000 type means the cdn can't get the frame  , you can see the cdn_rebuf = 0.0412, the download_id = cdn_newest_frame </font>
-
+* which 000 type means the cdn can't get the frame  , you can see the cdn_rebuf = 0.0412, the download_id = cdn_newest_frame 
 * 
 ```
 real_time 0.8897	cdn_rebuf0.0278	client_rebuf 0.006	download_duration 0.0059	frame_size 14587.0000	play_time len 0.0000	download_id 23	cdn_newest_frame 22	client_buffer 0.9200	play_time 0.0000	play_id 0.0000	latency 0.9200	111
 ```
 
-* <font color=#46A3ff size=2> which 111 type means the buffering status , you can see the play_time_len = 0 </font>
+* which 111 type means the buffering status , you can see the play_time_len = 0 
 
 * 
 ```
 real_time 4.8653	cdn_rebuf0.0000	client_rebuf 0.000	download_duration 0.0628	frame_size 36672.0000	play_time_len 0.0628	download_id 118	cdn_newest_frame 122	client_buffer 2.7584	play_time 1.9216	play_id 48.0000	latency 2.9184	222
 ```
-* <font color=#46A3ff size=2> which 222 type means the normal type status, you can see the play_time_len = download_duration</font>
+* which 222 type means the normal status, you can see the play_time_len = download_duration
 
 * 
 ```
 skip events: skip_download_frame, play_frame, new_download_frame, ADD_frame428 357 528 100
 ```
-* <font color=#46A3ff size=2> which means that it happens the skip events, the player not download the next frame , but to download the next ADD_FRAME frame. to let the latency small.</font>
+*  which means that it happens the skip events, the player not download the next frame, but to download the next ADD_FRAME frame. to let the latency small.
 ```
 ADD_Frame100
 ```
-* <font color=#46A3ff size=2> which means the player skip </font>
+*  which means the player skip 
 
 
 About livestreaming player sim please click the http://www.aitrans.online
