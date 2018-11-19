@@ -132,7 +132,7 @@ while True:
 
 
 
-        # -------------------------------------------Your Althgrithom ------------------------------------------- 
+        # -------------------------------------------Your Algorithm ------------------------------------------- 
         # which part is the althgrothm part ,the buffer based , 
         # if the buffer is enough ,choose the high quality
         # if the buffer is danger, choose the low  quality
