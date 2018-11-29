@@ -4,17 +4,19 @@
     For LiveStreaming Game'''
 # import the env from pip
 import LiveStreamingEnv.fixed_env as fixed_env
+#import fixed_env
 import LiveStreamingEnv.load_trace as load_trace
 #import matplotlib.pyplot as plt
 import time
 import numpy as np
+import tensorflow as tf
 import ABR
-import pyparams
 # path setting
 def test(user_id):
     #TRAIN_TRACES = '/home/game/test_sim_traces/'   #train trace path setting,
     #video_size_file = '/home/game/video_size_'      #video trace path setting,
     #LogFile_Path = "/home/game/log/"                #log file trace path setting,
+    
     TRAIN_TRACES = './network_trace/'   #train trace path setting,
     video_size_file = './video_trace/AsianCup_China_Uzbekistan/frame_trace_'      #video trace path setting,
     LogFile_Path = "./log/"                #log file trace path setting,
@@ -45,6 +47,9 @@ def test(user_id):
                                   logfile_path=LogFile_Path,
                                   VIDEO_SIZE_FILE=video_size_file,
                                   Debug = DEBUG)
+    
+    abr = ABR.Algorithm()
+    abr_init = abr.Initial()
 
     BIT_RATE      = [500.0,850.0,1200.0,1850.0] # kpbs
     TARGET_BUFFER = [2.0,3.0]   # seconds
@@ -78,9 +83,7 @@ def test(user_id):
     S_buffer_flag = [0] * past_frame_num
     S_cdn_flag = [0] * past_frame_num
     # params setting
-    params = pyparams.get_params()
-    print("Your params", params)
-
+   
     while True:
         reward_frame = 0
         # input the train steps
@@ -102,8 +105,10 @@ def test(user_id):
         # buffer_flag    : If the True which means the video is rebuffing , client buffer is rebuffing, no play the video
         # cdn_flag       : If the True cdn has no frame to get 
         # end_of_video   : If the True ,which means the video is over.
-        time, time_interval, send_data_size, chunk_len, rebuf, buffer_size, play_time_len,end_delay, cdn_newest_id, download_id, decision_flag, buffer_flag,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
-        cnt += 1
+        time,time_interval, send_data_size, chunk_len,\
+               rebuf, buffer_size, play_time_len,end_delay,\
+                cdn_newest_id, download_id, cdn_has_frame, decision_flag,\
+                buffer_flag, cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
 
         # S_info is sequential order
         S_time_interval.pop(0)
@@ -144,7 +149,7 @@ def test(user_id):
             # if the buffer is enough ,choose the high quality
             # if the buffer is danger, choose the low  quality
             # if there is no rebuf ,choose the low target_buffer
-            bit_rate , target_buffer = ABR.algorithm(time,S_time_interval,S_send_data_size,S_chunk_len,S_rebuf,S_buffer_size, S_play_time_len,S_end_delay,S_decision_flag,S_buffer_flag,S_cdn_flag, end_of_video, cdn_newest_id, download_id,params)
+            bit_rate , target_buffer = abr.run(time,S_time_interval,S_send_data_size,S_chunk_len,S_rebuf,S_buffer_size, S_play_time_len,S_end_delay,S_decision_flag,S_buffer_flag,S_cdn_flag, end_of_video, cdn_newest_id, download_id,abr_init)
             # ------------------------------------------- End  ------------------------------------------- 
             
         if end_of_video:
