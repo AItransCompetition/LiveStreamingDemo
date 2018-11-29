@@ -16,7 +16,7 @@ Table of Contents
      * demo.py         --- ```An SDK to call the SIM, and you will fill your algorithm in it. ```
      * video_size_0    --- ```video trace (low_bitrate)```
      * video_size_1    --- ```video trace (high_bitrate)```
-     * train_sim_trace --- ```network trace for trainning```
+     * train_sim_trace --- ```network trace for training```
      * test_sim_trace  --- ```network trace for you test```
      * ABR.py          --- ```you need to copy your algorithm in demo file to this file and upload it in the website to get your score.```
      * online.py       --- ``the same as the file in the server to call you ABR.py, which helps you to debug your uploads.```
@@ -81,13 +81,13 @@ Table of Contents
                    13 video_size_file = './video_size_'      #video trace path setting,
 
 * Video trace: Video trace has N files.```(N means the num of bitrate actions)```   
-* Video trace Formate   
+* Video trace format   
    
         |   Time(s)  | frame_data_size(b) |  is_I_flag |
         |------------|--------------------|------------|
         | 22.1131    | 321312             |   1        |  
         
-* Network trace Formate:   
+* Network trace Format:   
    
         |Time(s)  | throughput(kpbs) | rtt(ms)|
         |---------|------------------|--------|
@@ -124,7 +124,7 @@ Table of Contents
                    14 LogFile_Path = "./log/"                #log file trace path setting, 
         
    * if you are debugging your code, you can let the DEBUG = True.
-   * if you are training your model, consider the I/O, advise you let the DEBUG = False
+   * if you are trainning your model, consider the I/O, advise you let the DEBUG = False
    
 * Log formate:
 ```
