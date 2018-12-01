@@ -149,7 +149,7 @@ def test(user_id):
             # if the buffer is enough ,choose the high quality
             # if the buffer is danger, choose the low  quality
             # if there is no rebuf ,choose the low target_buffer
-            bit_rate , target_buffer = abr.run(time,S_time_interval,S_send_data_size,S_chunk_len,S_rebuf,S_buffer_size, S_play_time_len,S_end_delay,S_decision_flag,S_buffer_flag,S_cdn_flag, end_of_video, cdn_newest_id, download_id,abr_init)
+            bit_rate , target_buffer = abr.run(time,S_time_interval,S_send_data_size,S_chunk_len,S_rebuf,S_buffer_size, S_play_time_len,S_end_delay,S_decision_flag,S_buffer_flag,S_cdn_flag, end_of_video, cdn_newest_id, download_id,cdn_has_frame,abr_init)
             # ------------------------------------------- End  ------------------------------------------- 
             
         if end_of_video:
