@@ -15,7 +15,7 @@ class Algorithm:
      # Intial 
      def Initial(self):
      # Initail your session or something
-         with tf.Session() as sess:
+         with tf.Session().as_default() as sess:
              actor = a3c.ActorNetwork(sess,
                                  state_dim=[S_INFO, S_LEN], action_dim=A_DIM,
                                  learning_rate=ACTOR_LR_RATE)
