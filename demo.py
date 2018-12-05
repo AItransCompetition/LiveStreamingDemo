@@ -5,7 +5,7 @@
 # import the env from pip
 import LiveStreamingEnv.env as env
 import LiveStreamingEnv.load_trace as load_trace
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import time
 import numpy as np
 # path setting
@@ -15,7 +15,7 @@ LogFile_Path = "./log/"                #log file trace path setting,
 # Debug Mode: if True, You can see the debug info in the logfile
 #             if False, no log ,but the training speed is high
 DEBUG = False
-DRAW = False
+DRAW = True
 # load the trace
 all_cooked_time, all_cooked_bw, all_file_names = load_trace.load_trace(TRAIN_TRACES)
 #random_seed 
@@ -95,7 +95,7 @@ while True:
                 cdn_newest_id, download_id,cdn_has_frame,decision_flag, \
                 buffer_flag,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
         cnt += 1
-        '''if time_interval != 0:
+        if time_interval != 0:
             # plot bit_rate 
             id_list.append(idx)
             idx += time_interval
@@ -105,7 +105,7 @@ while True:
             # plot throughput 
             trace_idx = net_env.get_trace_id()
             print(trace_idx, idx,len(all_cooked_bw[trace_idx]))
-            throughput_record.append(all_cooked_bw[trace_idx][int(idx/0.5)] * 1000 )'''
+            throughput_record.append(all_cooked_bw[trace_idx][int(idx/0.5)] % 2940 )
         if not cdn_flag:
             reward_frame = frame_time_len * float(BIT_RATE[bit_rate]) / 1000  - REBUF_PENALTY * rebuf - LANTENCY_PENALTY * end_delay
         else:
@@ -119,24 +119,24 @@ while True:
        
             
             # draw setting
-            #if DRAW:
-            #    ax = fig.add_subplot(311)
-            #    plt.ylabel("BIT_RATE")
-            #    plt.ylim(300,1000)
-            #    plt.plot(id_list,bit_rate_record,'-r')
+            if DRAW:
+                ax = fig.add_subplot(311)
+                plt.ylabel("BIT_RATE")
+                plt.ylim(300,2000)
+                plt.plot(id_list,bit_rate_record,'-r')
             
-            #    ax = fig.add_subplot(312)
-            #    plt.ylabel("Buffer_size")
-            #    plt.ylim(0,7)
-            #    plt.plot(id_list,buffer_record,'-b')
+                ax = fig.add_subplot(312)
+                plt.ylabel("Buffer_size")
+                plt.ylim(0,7)
+                plt.plot(id_list,buffer_record,'-b')
 
-            #   ax = fig.add_subplot(313)
-            #    plt.ylabel("throughput")
-            #    plt.ylim(0,2500)
-            #    plt.plot(id_list,throughput_record,'-g')
+                ax = fig.add_subplot(313)
+                plt.ylabel("throughput")
+                plt.ylim(0,2500)
+                plt.plot(id_list,throughput_record,'-g')
 
-            #   plt.draw()
-            #    plt.pause(0.01)
+                plt.draw()
+                plt.pause(0.01)
 
 
 
