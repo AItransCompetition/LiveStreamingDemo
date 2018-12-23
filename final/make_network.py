@@ -100,7 +100,7 @@ def transition(state, variance):
 
 #随机生成一个当前状态同时确定变化的幅度
 for g in range(10):
-    f = open("./" + str(filename), "w")
+    f = open("./network_trace/" + str(filename), "w")
     current_state = random.randint(0, len(bitrate_states_low_var) - 1)
     current_variance = cov * bitrate_states_low_var[current_state]
     time = 0
@@ -125,7 +125,7 @@ for g in range(10):
         time += 0.5
     f.close()
 	#进行md5
-    md5f = open("./" + str(filename), "rb")
+    md5f = open("./network_trace/" + str(filename), "rb")
     md5 = hashlib.md5(md5f.read()).hexdigest()
     md5s.append(md5)
     print(md5)
