@@ -8,6 +8,7 @@ import LiveStreamingEnv.load_trace as load_trace
 #import matplotlib.pyplot as plt
 import time
 import numpy as np
+import ABR
 # path setting
 TRAIN_TRACES = './network_trace/'   #train trace path setting,
 #video_size_file = './video_trace/AsianCup_China_Uzbekistan/frame_trace_'      #video trace path setting,
@@ -72,6 +73,21 @@ if DRAW:
 call_cnt = 0
 call_time = 0
 switch_num = 0
+
+S_time_interval = []
+S_send_data_size = []
+S_frame_type = []
+S_frame_time_len = []
+S_buffer_size = []
+S_end_delay = []
+cdn_has_frame = []
+rebuf_time = 0
+buffer_flag = 0
+cdn_flag=0
+
+abr = ABR.Algorithm()
+abr.Initial()
+
 while True:
         reward_frame = 0
         # input the train steps
@@ -93,10 +109,21 @@ while True:
         # buffer_flag    : If the True which means the video is rebuffing , client buffer is rebuffing, no play the video
         # cdn_flag       : If the True cdn has no frame to get 
         # end_of_video   : If the True ,which means the video is over.
-        time, time_interval, send_data_size, chunk_len, rebuf, buffer_size, end_delay, cdn_newest_id, downlaod_id, cdn_has_frame, decision_flag, buffer_flag,switch,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
+        time, time_interval, send_data_size, frame_time_len, rebuf, buffer_size, end_delay, cdn_newest_id, downlaod_id, cdn_has_frame, decision_flag, buffer_flag,switch,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
         cnt += 1
         call_time += time_interval
         switch_num += switch
+
+        S_time_interval.append(time_interval)
+        S_buffer_size.append(buffer_size)
+        S_send_data_size.append(send_data_size)
+        S_frame_time_len.append(frame_time_len)
+        S_end_delay.append(end_delay)
+        if decision_flag:
+            S_frame_type.append(1)
+        else:
+            S_frame_type.append(0)
+        rebuf_time += rebuf
         '''if time_interval != 0:
             # plot bit_rate 
             id_list.append(idx)
@@ -120,17 +147,22 @@ while True:
         #    last_bit_rate = bit_rate
         if call_time > 0.5 and not end_of_video:
             reward_frame += -(switch_num) * SMOOTH_PENALTY * (1200 - 500) / 1000
+            
+            bit_rate , target_buffer = abr.run(S_time_interval, S_send_data_size,S_frame_time_len,S_frame_type,S_buffer_size,S_end_delay,\
+                                      rebuf_time, cdn_has_frame, cdn_flag, buffer_flag)
 
-            if call_cnt % 2 == 0:
-               bit_rate = 1
-            else:
-               bit_rate = 0
-
-            target_buffer = 1.5
             call_time = 0
             switch_num = 0
-            print("------",bit_rate, cnt, "----")
             call_cnt += 1
+
+            S_time_interval= []
+            S_send_data_size = []
+            S_frame_type = []
+            S_frame_time_len = []
+            S_buffer_size = []
+            S_end_delay = []
+            rebuf_time = 0
+
         # --`----------------------------------------- End  ------------------------------------------- 
 
         reward_all += reward_frame
