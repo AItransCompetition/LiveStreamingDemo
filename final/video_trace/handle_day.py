@@ -1,8 +1,15 @@
+import sys
 file = open("./2018-12-16.txt")
 lines = file.readlines()
 output = {}
 temp = ""
 cnt = 0
+#python3 has no has_key
+def key(id_num):
+    if sys.version_info.major==3:
+        return id_num in output
+    else:
+        return output.has_key(id_num)
 for line in lines:
     line=line.strip('\n')
     if line.startswith("FPS"): 
@@ -14,7 +21,8 @@ for line in lines:
         cnt = 0
     elif line.startswith("ID:dokidoki/mlinkm/"):
         Channel_ID_1200 = line[19:] 
-        if output.has_key(Channel_ID_1200):
+        #if output.has_key(Channel_ID_1200):
+        if key(Channel_ID_1200):
             temp = Channel_ID_1200 + "_high" 
         else:
             output[Channel_ID_1200 + "_high"] = []
@@ -22,7 +30,8 @@ for line in lines:
         cnt = 0
     elif line.startswith("ID:EXT-ENC-0/dokidoki/mlinkm/"):
         Channel_ID_500 = line[29:]
-        if output.has_key(Channel_ID_500):
+        #if output.has_key(Channel_ID_500):
+        if key(Channel_ID_500):
             temp = Channel_ID_500 + "_low" 
         else:
             output[Channel_ID_500 + "_low"] = []
