@@ -3,97 +3,88 @@
     Time 2018-12-15
     For LiveStreaming final Game'''
 # import the env from pip
-import LiveStreamingEnv.final_env as env
+#import LiveStreamingEnv.fixed_final_env as env
+import LiveStreamingEnv.final_fixed_env as env
 import LiveStreamingEnv.load_trace as load_trace
 #import matplotlib.pyplot as plt
 import time
 import numpy as np
 import ABR
-# path setting
-TRAIN_TRACES = './network_trace/'   #train trace path setting,
-#video_size_file = './video_trace/AsianCup_China_Uzbekistan/frame_trace_'      #video trace path setting,
-video_size_file = './video_trace/frame_trace_'      #video trace path setting,
-LogFile_Path = "./log/"                #log file trace path setting,
-# Debug Mode: if True, You can see the debug info in the logfile
-#             if False, no log ,but the training speed is high
-DEBUG = True
-DRAW = False
-# load the trace
-all_cooked_time, all_cooked_bw, all_file_names = load_trace.load_trace(TRAIN_TRACES)
-#random_seed 
-random_seed = 2
-video_count = 0
-#FPS = 25
-frame_time_len = 0.04
-#init the environment
-#setting one:
-#     1,all_cooked_time : timestamp
-#     2,all_cooked_bw   : throughput
-#     3,all_cooked_rtt  : rtt
-#     4,agent_id        : random_seed
-#     5,logfile_path    : logfile_path
-#     6,VIDEO_SIZE_FILE : Video Size File Path
-#     7,Debug Setting   : Debug
-net_env = env.Environment(all_cooked_time=all_cooked_time,
-			  all_cooked_bw=all_cooked_bw,
-			  random_seed=random_seed,
-			  logfile_path=LogFile_Path,
-			  VIDEO_SIZE_FILE=video_size_file,
-			  Debug = DEBUG)
-BIT_RATE      = [500.0,1200.0] # kpbs
-TARGET_BUFFER = [2.0,3.0]   # seconds
-# ABR setting
-RESEVOIR = 0.5
-CUSHION  = 2
-
-cnt = 0
-# defalut setting
-last_bit_rate = 0
-bit_rate = 0
-target_buffer = 1.5
-# QOE setting
-reward_frame = 0
-reward_all = 0
-SMOOTH_PENALTY= 0.02 
-REBUF_PENALTY = 1.5 
-LANTENCY_PENALTY = 0.005 
-
-# plot info
-idx = 0
-id_list = []
-bit_rate_record = []
-buffer_record = []
-throughput_record = []
-# plot the real time image
-if DRAW:
-    fig = plt.figure()
-    plt.ion()
-    plt.xlabel("time")
-    plt.axis('off')
-call_cnt = 0
-call_time = 0
-switch_num = 0
-
-S_time_interval = []
-S_send_data_size = []
-S_frame_type = []
-S_frame_time_len = []
-S_buffer_size = []
-S_end_delay = []
-cdn_has_frame = []
-rebuf_time = 0
-buffer_flag = 0
-cdn_flag=0
-
-abr = ABR.Algorithm()
-abr.Initial()
-
-while True:
+def test(user_id):
+    # path setting
+    TRAIN_TRACES = './network_trace/'   #train trace path setting,
+    #video_size_file = './video_trace/AsianCup_China_Uzbekistan/frame_trace_'      #video trace path setting,
+    video_size_file = './video_trace/frame_trace_'      #video trace path setting,
+    LogFile_Path = "./log/"                #log file trace path setting,
+    # Debug Mode: if True, You can see the debug info in the logfile
+    #             if False, no log ,but the training speed is high
+    DEBUG = False
+    DRAW = False
+    # load the trace
+    all_cooked_time, all_cooked_bw, all_file_names = load_trace.load_trace(TRAIN_TRACES)
+    #random_seed 
+    random_seed = 2
+    video_count = 0
+    #FPS = 25
+    frame_time_len = 0.04
+    reward_all_sum = 0
+    #init the environment
+    #setting one:
+    #     1,all_cooked_time : timestamp
+    #     2,all_cooked_bw   : throughput
+    #     3,all_cooked_rtt  : rtt
+    #     4,agent_id        : random_seed
+    #     5,logfile_path    : logfile_path
+    #     6,VIDEO_SIZE_FILE : Video Size File Path
+    #     7,Debug Setting   : Debug
+    net_env = env.Environment(all_cooked_time=all_cooked_time,
+    			  all_cooked_bw=all_cooked_bw,
+    			  random_seed=random_seed,
+    			  logfile_path=LogFile_Path,
+    			  VIDEO_SIZE_FILE=video_size_file,
+    			  Debug = DEBUG)
+    BIT_RATE      = [500.0,1200.0] # kpbs
+    TARGET_BUFFER = [2.0,3.0]   # seconds
+    # ABR setting
+    RESEVOIR = 0.5
+    CUSHION  = 2
+    
+    cnt = 0
+    # defalut setting
+    last_bit_rate = 0
+    bit_rate = 0
+    target_buffer = 1.5
+    # QOE setting
+    reward_frame = 0
+    reward_all = 0
+    SMOOTH_PENALTY= 0.02 
+    REBUF_PENALTY = 1.5 
+    LANTENCY_PENALTY = 0.005 
+    
+    call_cnt = 0
+    call_time = 0
+    switch_num = 0
+    
+    S_time_interval = []
+    S_send_data_size = []
+    S_frame_type = []
+    S_frame_time_len = []
+    S_buffer_size = []
+    S_end_delay = []
+    cdn_has_frame = []
+    rebuf_time = 0
+    buffer_flag = 0
+    cdn_flag=0
+    
+    abr = ABR.Algorithm()
+    abr.Initial()
+    
+    while True:
         reward_frame = 0
         # input the train steps
-        if cnt > 1200:
+        #if cnt > 1200:
             #plt.ioff()
-            break
+        #    break
         #actions bit_rate  target_buffer
         # every steps to call the environment
         # time           : physical time 
@@ -124,27 +115,11 @@ while True:
         else:
             S_frame_type.append(0)
         rebuf_time += rebuf
-        '''if time_interval != 0:
-            # plot bit_rate 
-            id_list.append(idx)
-            idx += time_interval
-            bit_rate_record.append(BIT_RATE[bit_rate])
-            # plot buffer 
-            buffer_record.append(buffer_size)
-            # plot throughput 
-            trace_idx = net_env.get_trace_id()
-            print(trace_idx, idx,len(all_cooked_bw[trace_idx]))
-            throughput_record.append(all_cooked_bw[trace_idx][int(idx/0.5)] * 1000 )'''
+
         if not cdn_flag:
             reward_frame = frame_time_len * float(BIT_RATE[bit_rate]) / 1000  - REBUF_PENALTY * rebuf - LANTENCY_PENALTY * end_delay
         else:
             reward_frame = -(REBUF_PENALTY * rebuf)
-        
-        #if decision_flag or end_of_video:
-            # reward formate = play_time * BIT_RATE - 4.3 * rebuf - 1.2 * end_delay
-        #    reward_frame += -1 * SMOOTH_PENALTY * (abs(BIT_RATE[bit_rate] - BIT_RATE[last_bit_rate]) / 1000)
-            # last_bit_rate
-        #    last_bit_rate = bit_rate
         if call_time > 0.5 and not end_of_video:
             reward_frame += -(switch_num) * SMOOTH_PENALTY * (1200 - 500) / 1000
             
@@ -168,16 +143,32 @@ while True:
         reward_all += reward_frame
         if end_of_video:
             # Narrow the range of results
+            print("video count", video_count, reward_all)
+            reward_all_sum += reward_all / 100
+            video_count += 1
+            if video_count >= len(all_file_names):
+                break
             cnt = 0
+            reward_all = 0
             last_bit_rate = 0
             bit_rate = 0
             target_buffer = 1.5
 
+            S_time_interval = []
+            S_send_data_size = []
+            S_frame_type = []
+            S_frame_time_len = []
+            S_buffer_size = []
+            S_end_delay = []
+            cdn_has_frame = []
+            rebuf_time = 0
+            buffer_flag = 0
+            cdn_flag=0
+
             call_cnt = 0
             call_time = 0
             switch_num = 0
-            
-if DRAW:
-    plt.show()
-print(reward_all)
+    return reward_all_sum
+a = test("aaa")
+print(a)
 
