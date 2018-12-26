@@ -7,7 +7,7 @@
 import LiveStreamingEnv.final_fixed_env as env
 import LiveStreamingEnv.load_trace as load_trace
 #import matplotlib.pyplot as plt
-import time
+import time as time_package
 import numpy as np
 import ABR
 def test(user_id):
@@ -44,9 +44,7 @@ def test(user_id):
     			  VIDEO_SIZE_FILE=video_size_file,
     			  Debug = DEBUG)
     BIT_RATE      = [500.0,1200.0] # kpbs
-    TARGET_BUFFER = [2.0,3.0]   # seconds
     # ABR setting
-    RESEVOIR = 0.5
     CUSHION  = 2
     
     cnt = 0
@@ -122,10 +120,15 @@ def test(user_id):
             reward_frame = -(REBUF_PENALTY * rebuf)
         if call_time > 0.5 and not end_of_video:
             reward_frame += -(switch_num) * SMOOTH_PENALTY * (1200 - 500) / 1000
-            
+
+            time_start = time_package.time() 
             bit_rate , target_buffer = abr.run(S_time_interval, S_send_data_size,S_frame_time_len,S_frame_type,S_buffer_size,S_end_delay,\
                                       rebuf_time, cdn_has_frame, cdn_flag, buffer_flag)
-
+            time_end = time_package.time()
+            if time_end - time_start > 0.05:
+                print("Warning Your decision is time out,This decision is default decision")
+                bit_rate = 0
+                target_buffer = 1.5
             call_time = 0
             switch_num = 0
             call_cnt += 1
