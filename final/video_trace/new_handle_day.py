@@ -3,6 +3,8 @@
 import urllib.request
 import os
 import sys
+import requests
+import time
 
 # 文件下载
 def file_download(url, file_path):
@@ -10,12 +12,28 @@ def file_download(url, file_path):
     if not os.path.exists(file_path):
         #os.makedirs(file_path)
         os.makedirs(fn[1])
-    def Schedule(a,b,c):
-        per = 100.0 * a * b / c
-        if per > 100 :
-            per = 100
-        print('%.2f%%' % per)
-    urllib.request.urlretrieve(url, file_path, Schedule)
+    # def Schedule(a,b,c):
+#         per = 100.0 * a * b / c
+#         #per=round(per,2)
+#         if per > 100 :
+#             per = 100
+#         print('%.2f%%\r' % per)
+#     urllib.request.urlretrieve(url, file_path, Schedule)
+    start=time.time()
+    size=0
+    response=requests.get(url,stream=True)
+    chunk_size=1024
+    content_size=int(response.headers['content-length'])
+    print(content_size)
+    if response.status_code==200:
+        print('[文件大小]:%0.2f MB' % (content_size/chunk_size/1024) )
+        with open(file_path,"wb") as file:
+            for data in response.iter_content(chunk_size=chunk_size):
+                file.write(data)
+                size +=len(data)
+                print('\r'+'[下载进度]:%s%.2f%%' % ('>'*int(size*50/content_size),float(size/content_size *100)),end='')
+    end=time.time()
+    print('\n'+"全部下载完成！用时%.2f秒" % (end-start))
 
 
 # 文件读取
@@ -160,12 +178,14 @@ def file_print(result_path, result_align):
 
 
 def main():
-    file_path = "./12-12/2018-12-12.txt"
-    dir_path = "./12-12/"
-    result_path = "./12-12/video_trace/"
+    #file_path = "./12-12/2018-12-12.txt"
+    #result_path = "./12-12/video_trace/"
     url = "http://164.52.0.183:8000/file/findTrace/2018-12-12.txt"
-    # file_download(url, file_path)
-    file_download(url,file_path)
+    file_name=url.split('/')[-1]
+    dir_path='./'+file_name[-9:-4]+'/'
+    file_path=dir_path+file_name
+    result_path=dir_path+"video_trace/"
+    file_download(url, file_path)
     output = file_read(file_path)
     file_mach, file_len = file_match(output)
     file_save(dir_path, file_mach)
