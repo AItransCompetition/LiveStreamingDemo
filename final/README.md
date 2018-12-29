@@ -32,3 +32,34 @@
          python make_network  1 0.5 0.5 1440
 ```
  * 具体参数含义请看代码
+# online 接口
+```python
+         # 每 500ms 调用一次
+         if call_time > 0.5 and not end_of_video:
+            reward_frame += -(switch_num) * SMOOTH_PENALTY * (1200 - 500) / 1000
+
+            bit_rate , target_buffer = abr.run(S_time_interval,  # 过去500ms的每个周期时长
+                                              S_send_data_size,\ # 过去500ms的每个周期下载数据量
+                                              S_frame_time_len,\ # 过去500ms的每个周期下载帧的视频时长
+                                              S_frame_type,\     # 过去500ms的每个周期下载帧的帧类型 （0为P帧，1为I帧）
+                                              S_real_quality,\   # 过去500ms的每个周期下载帧的码率类型（500k, 1200k）
+                                              S_buffer_size,\    # 过去500ms的每个周期客户端buffer长度
+                                              S_end_delay,\      # 过去500ms的每个周期端到端时延
+                                              rebuf_time,\       # 过去500ms的总卡顿时间
+                                              cdn_has_frame,\    # 此刻的cdn 帧积累的累积值
+                                              cdn_flag,\         # 此刻的cdn是否存在的卡顿，cdn flag 实际为cdn rebuf flag
+                                              buffer_flag)       # 此刻客户端是否处于缓冲
+
+            call_time = 0
+            switch_num = 0
+            call_cnt += 1
+
+            S_time_interval= []
+            S_send_data_size = []
+            S_frame_type = []
+            S_frame_time_len = []
+            S_buffer_size = []
+            S_end_delay = []
+            S_real_quality = []
+            rebuf_time = 0
+```
