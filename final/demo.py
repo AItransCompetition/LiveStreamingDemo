@@ -93,7 +93,7 @@ while True:
         # buffer_flag    : If the True which means the video is rebuffing , client buffer is rebuffing, no play the video
         # cdn_flag       : If the True cdn has no frame to get 
         # end_of_video   : If the True ,which means the video is over.
-        time, time_interval, send_data_size, chunk_len, rebuf, buffer_size, end_delay, cdn_newest_id, downlaod_id, cdn_has_frame, decision_flag, buffer_flag,switch,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
+        time, time_interval, send_data_size, chunk_len, rebuf, buffer_size, end_delay, cdn_newest_id, downlaod_id, cdn_has_frame, decision_flag, real_quality,buffer_flag,switch,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
         cnt += 1
         call_time += time_interval
         switch_num += switch

@@ -70,6 +70,7 @@ def test(user_id):
     S_buffer_size = []
     S_end_delay = []
     cdn_has_frame = []
+    S_real_quality = []
     rebuf_time = 0
     buffer_flag = 0
     cdn_flag=0
@@ -98,7 +99,7 @@ def test(user_id):
         # buffer_flag    : If the True which means the video is rebuffing , client buffer is rebuffing, no play the video
         # cdn_flag       : If the True cdn has no frame to get 
         # end_of_video   : If the True ,which means the video is over.
-        time, time_interval, send_data_size, frame_time_len, rebuf, buffer_size, end_delay, cdn_newest_id, downlaod_id, cdn_has_frame, decision_flag, buffer_flag,switch,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
+        time, time_interval, send_data_size, frame_time_len, rebuf, buffer_size, end_delay, cdn_newest_id, downlaod_id, cdn_has_frame, decision_flag, real_quality,buffer_flag,switch,cdn_flag, end_of_video = net_env.get_video_frame(bit_rate,target_buffer)
         cnt += 1
         call_time += time_interval
         switch_num += switch
@@ -108,6 +109,7 @@ def test(user_id):
         S_send_data_size.append(send_data_size)
         S_frame_time_len.append(frame_time_len)
         S_end_delay.append(end_delay)
+        S_real_quality.append(real_quality)
         if decision_flag:
             S_frame_type.append(1)
         else:
@@ -122,7 +124,7 @@ def test(user_id):
             reward_frame += -(switch_num) * SMOOTH_PENALTY * (1200 - 500) / 1000
 
             time_start = time_package.time() 
-            bit_rate , target_buffer = abr.run(S_time_interval, S_send_data_size,S_frame_time_len,S_frame_type,S_buffer_size,S_end_delay,\
+            bit_rate , target_buffer = abr.run(S_time_interval, S_send_data_size,S_frame_time_len,S_frame_type,S_real_quality,S_buffer_size,S_end_delay,\
                                       rebuf_time, cdn_has_frame, cdn_flag, buffer_flag)
             time_end = time_package.time()
             if time_end - time_start > 0.05:
@@ -139,6 +141,7 @@ def test(user_id):
             S_frame_time_len = []
             S_buffer_size = []
             S_end_delay = []
+            S_real_quality = []
             rebuf_time = 0
 
         # --`----------------------------------------- End  ------------------------------------------- 
@@ -163,6 +166,7 @@ def test(user_id):
             S_frame_time_len = []
             S_buffer_size = []
             S_end_delay = []
+            S_real_quality = []
             cdn_has_frame = []
             rebuf_time = 0
             buffer_flag = 0
