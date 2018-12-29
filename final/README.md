@@ -38,7 +38,7 @@
          if call_time > 0.5 and not end_of_video:
             reward_frame += -(switch_num) * SMOOTH_PENALTY * (1200 - 500) / 1000
 
-            bit_rate , target_buffer = abr.run(S_time_interval,  # 过去500ms的每个周期时长
+            bit_rate , target_buffer = abr.run(S_time_interval,\  # 过去500ms的每个周期时长
                                               S_send_data_size,\ # 过去500ms的每个周期下载数据量
                                               S_frame_time_len,\ # 过去500ms的每个周期下载帧的视频时长
                                               S_frame_type,\     # 过去500ms的每个周期下载帧的帧类型 （0为P帧，1为I帧）
