@@ -109,7 +109,7 @@ def test(user_id):
         S_send_data_size.append(send_data_size)
         S_frame_time_len.append(frame_time_len)
         S_end_delay.append(end_delay)
-        S_real_quality.append(real_quality)
+        S_real_quality.append(BIT_RATE[real_quality])
         if decision_flag:
             S_frame_type.append(1)
         else:
