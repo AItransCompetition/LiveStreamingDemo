@@ -19,7 +19,7 @@ Table of Contents
      * train_sim_trace --- ```network trace for training```
      * test_sim_trace  --- ```network trace for you test```
      * ABR.py          --- ```you need to copy your algorithm in demo file to this file and upload it in the website to get your score.```
-     * online.py       --- ``the same as the file in the server to call you ABR.py, which helps you to debug your uploads.```
+     * online.py       --- ```the same as the file in the server to call you ABR.py, which helps you to debug your uploads.```
 # What you need to do ?
 * you should  upload your algorithm in this area
 ```python
